@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Задачі на рух — 4 клас</title>
+<style>
+:root{
+  --ink:#22314a; --muted:#5b6b85; --bg:#eef6ff; --card:#ffffff;
+  --blue:#2f6fed; --blue-soft:#e6efff;
+  --green:#2e9e5b; --green-bg:#e2f6ea;
+  --red:#d64545; --red-bg:#fde7e7;
+  --amber:#f5a623; --amber-bg:#fff4d9;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;font-size:17px}
+.wrap{max-width:820px;margin:0 auto;padding:0 14px 60px}
+
+header.hero{background:linear-gradient(135deg,#2f6fed,#18b5a6);color:#fff;border-radius:0 0 28px 28px;padding:28px 20px 24px;text-align:center;box-shadow:0 6px 18px rgba(47,111,237,.25)}
+header.hero h1{margin:0;font-size:clamp(26px,6vw,38px);letter-spacing:.3px}
+header.hero p{margin:6px 0 0;font-size:19px;opacity:.95}
+
+.bar{position:sticky;top:0;z-index:20;background:rgba(238,246,255,.95);backdrop-filter:blur(6px);padding:10px 0 8px;margin-top:10px}
+.bar-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:15px;color:var(--muted);flex-wrap:wrap}
+.bar-row b{color:var(--ink)}
+.track{height:10px;background:#d7e4f7;border-radius:99px;overflow:hidden;margin-top:6px}
+.fill{height:100%;width:0;background:linear-gradient(90deg,#2f6fed,#18b5a6);border-radius:99px;transition:width .4s}
+
+button{font:inherit;cursor:pointer}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:12px;padding:8px 16px;font-weight:600;box-shadow:0 2px 0 #1f4fb0}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translateY(1px);box-shadow:none}
+.btn.ghost{background:#fff;color:var(--blue);box-shadow:0 0 0 2px var(--blue) inset}
+
+h2{font-size:22px;margin:0}
+.theory{background:var(--card);border-radius:20px;padding:18px;margin-top:14px;box-shadow:0 3px 12px rgba(34,49,74,.08)}
+.theory h2{margin-bottom:12px}
+.formulas{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.formula{border-radius:16px;padding:12px;text-align:center}
+.formula p{margin:0 0 6px;font-size:15px}
+.formula .eq{font-size:26px;font-weight:700;letter-spacing:.5px}
+.f1{background:#e6efff}.f2{background:#e2f6ea}.f3{background:#fff0dc}
+.attention{margin-top:14px;background:var(--amber-bg);border-left:6px solid var(--amber);border-radius:14px;padding:12px 16px}
+.attention h3{margin:0 0 6px;color:#c0392b;font-size:19px}
+.attention ul{margin:0;padding-left:20px}
+.attention li{margin:4px 0}
+.attention b{color:#1d5fd0}
+
+.group{margin-top:26px}
+.group-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.group-head > svg{background:#fff;border-radius:12px;padding:4px 8px;box-shadow:0 2px 8px rgba(34,49,74,.08)}
+.note{margin:0 0 10px;color:var(--muted);font-size:15px}
+
+.card{background:var(--card);border-radius:20px;padding:16px 16px 18px;margin-bottom:16px;box-shadow:0 3px 12px rgba(34,49,74,.08);border:3px solid transparent;scroll-margin-top:90px;transition:border-color .2s,box-shadow .2s}
+.card.current{border-color:var(--blue);box-shadow:0 0 0 4px rgba(47,111,237,.15),0 3px 12px rgba(34,49,74,.08)}
+.card.done{opacity:.98}
+.q-head{display:flex;gap:12px;align-items:flex-start}
+.num{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;display:grid;place-items:center;font-size:18px}
+.card.ok .num{background:var(--green)}
+.card.bad .num{background:var(--red)}
+.q-text{margin:0;font-size:18px}
+
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.opt{background:#f4f8ff;border:2px solid #c9d9f5;border-radius:14px;padding:12px 10px;font-size:19px;font-weight:600;color:var(--ink);text-align:center;transition:transform .1s,background .15s,border-color .15s}
+.opt:hover:not(:disabled){background:var(--blue-soft);border-color:var(--blue);transform:translateY(-1px)}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--green-bg);border-color:var(--green);color:#136b38}
+.opt.wrong{background:var(--red-bg);border-color:var(--red);color:#9b1f1f}
+.opt.dim{opacity:.55}
+
+.fb{margin-top:14px;border-radius:14px;padding:12px 14px;font-size:16px}
+.fb.ok{background:var(--green-bg);border-left:6px solid var(--green)}
+.fb.bad{background:var(--red-bg);border-left:6px solid var(--red)}
+.fb .verdict{font-weight:700;font-size:18px;margin-bottom:4px}
+.fb .sol-title{font-weight:600;margin:8px 0 2px}
+.fb .line{margin:2px 0}
+.fb .next{margin-top:10px}
+
+.summary{margin-top:26px;background:#fff;border-radius:24px;padding:24px 18px;text-align:center;box-shadow:0 6px 22px rgba(34,49,74,.14);border:3px solid var(--blue);scroll-margin-top:90px}
+.summary h2{font-size:26px}
+.score{font-size:54px;font-weight:800;color:var(--blue);margin:6px 0 0;line-height:1.1}
+.score small{font-size:24px;color:var(--muted);font-weight:600}
+.stars{display:flex;justify-content:center;gap:6px;margin:8px 0}
+.star{width:38px;height:38px}
+.msg{font-size:19px;margin:6px 0 14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0 18px}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:99px;padding:5px 12px;font-weight:700;text-decoration:none;font-size:15px}
+.chip.ok{background:var(--green-bg);color:#136b38;border:2px solid var(--green)}
+.chip.bad{background:var(--red-bg);color:#9b1f1f;border:2px solid var(--red)}
+.chips-note{font-size:14px;color:var(--muted);margin:-6px 0 14px}
+
+
+/* ---------- іконки (SVG) ---------- */
+.ic{display:inline-block;flex:0 0 auto}
+.hero h1{display:flex;align-items:center;justify-content:center;gap:12px}
+.hero-ic{width:48px;height:48px}
+.btn .ic{width:18px;height:18px;vertical-align:-3px;margin-right:6px}
+.btn .ic.r{margin:0 0 0 6px}
+.theory h2,.group-head h2,.summary h2{display:flex;align-items:center}
+.summary h2{justify-content:center}
+.h-ic{width:30px;height:30px;margin-right:8px}
+.summary .h-ic{width:44px;height:44px}
+.attention h3{display:flex;align-items:center}
+.attention .h-ic{width:26px;height:26px}
+.q-body{flex:1;min-width:0}
+.q-icons{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.q-icons .ic{width:64px;height:64px;background:#f4f8ff;border-radius:14px;padding:4px}
+.flip{transform:scaleX(-1)}
+.opt .mark{width:20px;height:20px;vertical-align:-4px;margin-right:6px}
+.verdict .mark{width:24px;height:24px;vertical-align:-5px;margin-right:8px}
+.chip .ic{width:16px;height:16px}
+
+[hidden]{display:none!important}
+@media (max-width:640px){
+  body{font-size:16px}
+  .formulas{grid-template-columns:1fr}
+  .opts{grid-template-columns:repeat(2,1fr)}
+  .q-text{font-size:17px}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1><span class="si" data-ic="rocket" data-cls="hero-ic"></span>Задачі на рух</h1>
+  <p>4 клас</p>
+</header>
+
+<div class="wrap">
+  <div class="bar">
+    <div class="bar-row">
+      <span>Відповіли: <b id="stAnswered">0</b> з <b id="stTotal">9</b> · Правильно: <b id="stCorrect">0</b></span>
+      <button class="btn ghost" id="btnNew" type="button"><span class="si" data-ic="refresh"></span>Нові числа</button>
+    </div>
+    <div class="track"><div class="fill" id="fill"></div></div>
+  </div>
+
+  <section class="theory">
+    <h2><span class="si" data-ic="book" data-cls="h-ic"></span>Запам’ятай</h2>
+    <div class="formulas">
+      <div class="formula f1"><p>Щоб знайти відстань, потрібно швидкість помножити на час</p><div class="eq">S = V · t</div></div>
+      <div class="formula f2"><p>Щоб знайти час, потрібно відстань поділити на швидкість</p><div class="eq">t = S : V</div></div>
+      <div class="formula f3"><p>Щоб знайти швидкість, потрібно відстань поділити на час</p><div class="eq">V = S : t</div></div>
+    </div>
+    <div class="attention">
+      <h3><span class="si" data-ic="alert" data-cls="h-ic"></span>Увага! Важлива інформація!</h3>
+      <ul>
+        <li>При розв’язуванні задач на зустрічний рух доцільно використовувати поняття <b>«швидкість зближення»</b>.</li>
+        <li>При розв’язуванні задач на рух у протилежних напрямах доцільно використовувати поняття <b>«швидкість віддалення»</b>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div id="tasks"></div>
+
+  <section class="summary" id="summary" hidden>
+    <h2><span class="si" data-ic="trophy" data-cls="h-ic"></span>Підсумок</h2>
+    <div class="score" id="sumScore"></div>
+    <div class="stars" id="sumStars"></div>
+    <p class="msg" id="sumMsg"></p>
+    <div class="chips" id="sumChips"></div>
+    <p class="chips-note">Натисни на номер задачі, щоб повернутися до неї та переглянути розв’язання.</p>
+    <button class="btn" id="btnAgain" type="button"><span class="si" data-ic="refresh"></span>Спробувати ще раз з новими числами</button>
+  </section>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+const pick = arr => arr[rnd(0, arr.length - 1)];
+const shuffle = arr => {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = rnd(0, i);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+const isInt = n => Number.isInteger(n) && Number.isFinite(n);
+
+/* Збирає 4 різні варіанти відповіді: правильний + правдоподібні помилкові */
+function makeOptions(correct, candidates, step) {
+  const out = [correct];
+  const seen = new Set(out);
+  for (const c of shuffle(candidates)) {
+    if (out.length >= 4) break;
+    if (isInt(c) && c > 0 && !seen.has(c)) { seen.add(c); out.push(c); }
+  }
+  let k = 1;
+  while (out.length < 4) {
+    for (const s of shuffle([1, -1])) {
+      const c = correct + s * k * step;
+      if (out.length < 4 && c > 0 && !seen.has(c)) { seen.add(c); out.push(c); }
+    }
+    k++;
+  }
+  return shuffle(out);
+}
+
+const L = (s) => `<div class="line">${s}</div>`;
+
+/* ---------- SVG-іконки (власні, прості, однакові на всіх пристроях) ---------- */
+const BIKE_BASE =
+  '<circle cx="14" cy="46" r="10" fill="none" stroke="#22314a" stroke-width="3.5"/>' +
+  '<circle cx="50" cy="46" r="10" fill="none" stroke="#22314a" stroke-width="3.5"/>' +
+  '<path d="M14 46 L32 46 L27 28 L42 28 L50 46 M32 46 L42 28 M22 25 H31 M42 28 L40 21 H46" fill="none" stroke="#2f6fed" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>';
+const ICONS = {
+  /* транспорт і люди */
+  bike: ['0 0 64 64', '<g transform="translate(0,-3)">' + BIKE_BASE + '</g>'],
+  cyclist: ['0 0 64 64', BIKE_BASE +
+    '<circle cx="37" cy="9" r="5" fill="#f5a623"/>' +
+    '<path d="M28 26 L36 15 L43 21" fill="none" stroke="#d64545" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="M28 26 L35 37 L32 46" fill="none" stroke="#22314a" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>'],
+  bus: ['0 0 64 64',
+    '<rect x="5" y="12" width="54" height="36" rx="8" fill="#2f6fed"/>' +
+    '<rect x="10" y="18" width="12" height="12" rx="2.5" fill="#dbe8ff"/>' +
+    '<rect x="26" y="18" width="12" height="12" rx="2.5" fill="#dbe8ff"/>' +
+    '<rect x="42" y="18" width="12" height="12" rx="2.5" fill="#dbe8ff"/>' +
+    '<rect x="5" y="36" width="54" height="4" fill="#1f4fb0"/>' +
+    '<circle cx="19" cy="49" r="6.5" fill="#22314a"/><circle cx="19" cy="49" r="2.5" fill="#cfe0ff"/>' +
+    '<circle cx="45" cy="49" r="6.5" fill="#22314a"/><circle cx="45" cy="49" r="2.5" fill="#cfe0ff"/>'],
+  heli: ['0 0 64 64',
+    '<path d="M44 33 L61 28 L61 36 L46 41 Z" fill="#2e9e5b"/>' +
+    '<ellipse cx="30" cy="36" rx="18" ry="12" fill="#2e9e5b"/>' +
+    '<ellipse cx="25" cy="34" rx="9" ry="6.5" fill="#dff5e7"/>' +
+    '<path d="M30 24 V18" stroke="#22314a" stroke-width="3.5" stroke-linecap="round"/>' +
+    '<path d="M6 17 H54" stroke="#22314a" stroke-width="4" stroke-linecap="round"/>' +
+    '<path d="M58 23 V41" stroke="#22314a" stroke-width="3" stroke-linecap="round"/>' +
+    '<path d="M14 52 H46 M21 48 V52 M39 48 V52" fill="none" stroke="#22314a" stroke-width="3.5" stroke-linecap="round"/>'],
+  truck: ['0 0 64 64',
+    '<rect x="3" y="14" width="35" height="30" rx="3" fill="#f5a623"/>' +
+    '<path d="M40 24 H52 L61 34 V44 H40 Z" fill="#2f6fed"/>' +
+    '<path d="M44 27.5 H51 L56 33.5 H44 Z" fill="#dbe8ff"/>' +
+    '<circle cx="15" cy="46" r="6.5" fill="#22314a"/><circle cx="15" cy="46" r="2.5" fill="#cfe0ff"/>' +
+    '<circle cx="50" cy="46" r="6.5" fill="#22314a"/><circle cx="50" cy="46" r="2.5" fill="#cfe0ff"/>'],
+  scooter: ['0 0 64 64',
+    '<path d="M11 40 Q11 27 24 27 H30 V38 H13 Z" fill="#d64545"/>' +
+    '<rect x="17" y="38" width="28" height="6" rx="3" fill="#d64545"/>' +
+    '<rect x="15" y="22" width="16" height="6" rx="3" fill="#22314a"/>' +
+    '<path d="M50 44 L43 17 M38 17 H49" fill="none" stroke="#22314a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<circle cx="14" cy="47" r="7" fill="#22314a"/><circle cx="14" cy="47" r="2.5" fill="#cfe0ff"/>' +
+    '<circle cx="50" cy="47" r="7" fill="#22314a"/><circle cx="50" cy="47" r="2.5" fill="#cfe0ff"/>'],
+  boat: ['0 0 64 64',
+    '<path d="M31 27 V13 M31 13 L41 17 L31 21" fill="#d64545" stroke="#22314a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>' +
+    '<path d="M21 38 V27 H42 L48 38 Z" fill="#ffffff" stroke="#22314a" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<rect x="26" y="30" width="9" height="6" rx="1.5" fill="#9cc0ff"/>' +
+    '<path d="M3 38 H61 L53 51 H13 Z" fill="#2f6fed"/>' +
+    '<path d="M8 43 H57" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>' +
+    '<path d="M2 57 Q9 52 16 57 T30 57 T44 57 T58 57" fill="none" stroke="#18b5a6" stroke-width="3" stroke-linecap="round"/>'],
+  skier: ['0 0 64 64',
+    '<circle cx="34" cy="10" r="5" fill="#f5a623"/>' +
+    '<path d="M33 16 L28 34" fill="none" stroke="#2f6fed" stroke-width="6.5" stroke-linecap="round"/>' +
+    '<path d="M28 34 L22 46 M28 34 L37 46" fill="none" stroke="#22314a" stroke-width="4.5" stroke-linecap="round"/>' +
+    '<path d="M31 21 L43 27 L51 50 M30 21 L19 28 L11 50" fill="none" stroke="#22314a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="M7 54 H44 Q49 54 52 50" fill="none" stroke="#d64545" stroke-width="3.5" stroke-linecap="round"/>'],
+  hiker: ['0 0 64 64',
+    '<circle cx="30" cy="10" r="5" fill="#f5a623"/>' +
+    '<rect x="14" y="18" width="12" height="19" rx="4" fill="#d64545"/>' +
+    '<path d="M30 17 V36" fill="none" stroke="#2e9e5b" stroke-width="7.5" stroke-linecap="round"/>' +
+    '<path d="M30 22 L40 31" fill="none" stroke="#2e9e5b" stroke-width="4.5" stroke-linecap="round"/>' +
+    '<path d="M41 17 L45 55" fill="none" stroke="#8a5a2b" stroke-width="3" stroke-linecap="round"/>' +
+    '<path d="M30 36 L24 53 M30 36 L38 53" fill="none" stroke="#22314a" stroke-width="5" stroke-linecap="round"/>'],
+  freight: ['0 0 64 64',
+    '<rect x="7" y="13" width="8" height="12" fill="#22314a"/>' +
+    '<rect x="3" y="24" width="25" height="20" rx="4" fill="#4a5a78"/>' +
+    '<rect x="24" y="16" width="22" height="28" rx="3" fill="#d64545"/>' +
+    '<rect x="29" y="21" width="12" height="9" rx="2" fill="#ffe7a8"/>' +
+    '<rect x="48" y="28" width="14" height="16" rx="2" fill="#f5a623"/>' +
+    '<circle cx="12" cy="48" r="5" fill="#22314a"/><circle cx="26" cy="48" r="5" fill="#22314a"/>' +
+    '<circle cx="38" cy="48" r="5" fill="#22314a"/><circle cx="55" cy="48" r="5" fill="#22314a"/>' +
+    '<path d="M0 54.5 H64" stroke="#22314a" stroke-width="2.5"/>'],
+  express: ['0 0 64 64',
+    '<path d="M2 42 C2 30 10 22 26 22 H56 Q62 22 62 28 V42 Q62 45 59 45 H5 Q2 45 2 42 Z" fill="#e8f0ff" stroke="#2f6fed" stroke-width="3"/>' +
+    '<path d="M9 33 Q13 27 24 27 H27 V33 Z" fill="#2f6fed"/>' +
+    '<rect x="32" y="28" width="7" height="6" rx="1.5" fill="#2f6fed"/>' +
+    '<rect x="42" y="28" width="7" height="6" rx="1.5" fill="#2f6fed"/>' +
+    '<rect x="52" y="28" width="6" height="6" rx="1.5" fill="#2f6fed"/>' +
+    '<rect x="4" y="38" width="56" height="3" fill="#d64545"/>' +
+    '<circle cx="15" cy="48" r="4.5" fill="#22314a"/><circle cx="49" cy="48" r="4.5" fill="#22314a"/>' +
+    '<path d="M0 54.5 H64" stroke="#22314a" stroke-width="2.5"/>'],
+  /* оформлення */
+  rocket: ['0 0 64 64',
+    '<path d="M24 36 L11 49 L25 46 Z" fill="#d64545"/><path d="M40 36 L53 49 L39 46 Z" fill="#d64545"/>' +
+    '<path d="M32 4 C45 13 46 33 41 46 H23 C18 33 19 13 32 4 Z" fill="#ffffff"/>' +
+    '<circle cx="32" cy="24" r="6.5" fill="#2f6fed" stroke="#22314a" stroke-width="2.5"/>' +
+    '<path d="M27 48 Q32 63 37 48 Z" fill="#f5a623"/>'],
+  book: ['0 0 64 64',
+    '<path d="M32 16 C25 11 14 11 5 14 V50 C14 47 25 47 32 52 Z" fill="#e6efff" stroke="#2f6fed" stroke-width="3" stroke-linejoin="round"/>' +
+    '<path d="M32 16 C39 11 50 11 59 14 V50 C50 47 39 47 32 52 Z" fill="#ffffff" stroke="#2f6fed" stroke-width="3" stroke-linejoin="round"/>' +
+    '<path d="M11 22 H26 M11 30 H26 M11 38 H24 M38 22 H53 M38 30 H53 M38 38 H51" stroke="#9cc0ff" stroke-width="2.5" stroke-linecap="round"/>'],
+  alert: ['0 0 64 64',
+    '<circle cx="32" cy="32" r="28" fill="#d64545"/>' +
+    '<rect x="28.5" y="14" width="7" height="24" rx="3.5" fill="#ffffff"/>' +
+    '<circle cx="32" cy="46" r="4.2" fill="#ffffff"/>'],
+  pencil: ['0 0 64 64',
+    '<path d="M10 54 L14 39 L40 13 L51 24 L25 50 Z" fill="#f5a623"/>' +
+    '<path d="M10 54 L14 39 L25 50 Z" fill="#ffe0b0"/><path d="M10 54 L12 46 L18 52 Z" fill="#22314a"/>' +
+    '<path d="M40 13 L44 9 Q47 6 50 9 L55 14 Q58 17 55 20 L51 24 Z" fill="#d64545"/>'],
+  trophy: ['0 0 64 64',
+    '<path d="M18 8 H46 V26 Q46 40 32 42 Q18 40 18 26 Z" fill="#f5a623"/>' +
+    '<path d="M18 13 H9 Q9 30 21 32 M46 13 H55 Q55 30 43 32" fill="none" stroke="#f5a623" stroke-width="4" stroke-linecap="round"/>' +
+    '<path d="M25 14 V26 Q25 33 30 35" fill="none" stroke="#ffe0a0" stroke-width="3" stroke-linecap="round"/>' +
+    '<rect x="28.5" y="42" width="7" height="9" fill="#f5a623"/>' +
+    '<rect x="19" y="50" width="26" height="7" rx="2.5" fill="#22314a"/>'],
+  /* службові (24x24) */
+  check: ['0 0 24 24',
+    '<circle cx="12" cy="12" r="11" fill="#2e9e5b"/>' +
+    '<path d="M6.5 12.5 L10.5 16.5 L17.5 8" fill="none" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>'],
+  cross: ['0 0 24 24',
+    '<circle cx="12" cy="12" r="11" fill="#d64545"/>' +
+    '<path d="M8 8 L16 16 M16 8 L8 16" fill="none" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round"/>'],
+  star: ['0 0 24 24',
+    '<path d="M12 2.2 L14.8 8.6 L21.8 9.3 L16.5 14 L18.1 20.9 L12 17.3 L5.9 20.9 L7.5 14 L2.2 9.3 L9.2 8.6 Z" fill="#f5a623" stroke="#e08e0b" stroke-width="1" stroke-linejoin="round"/>'],
+  starempty: ['0 0 24 24',
+    '<path d="M12 2.2 L14.8 8.6 L21.8 9.3 L16.5 14 L18.1 20.9 L12 17.3 L5.9 20.9 L7.5 14 L2.2 9.3 L9.2 8.6 Z" fill="#e3ecf9" stroke="#c4d4ec" stroke-width="1" stroke-linejoin="round"/>'],
+  refresh: ['0 0 24 24',
+    '<path d="M19.5 12 A7.5 7.5 0 1 1 16.8 6.2" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>' +
+    '<path d="M20.5 3.5 V8.5 H15.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>'],
+  arrowdown: ['0 0 24 24',
+    '<path d="M12 4 V19 M5.5 12.5 L12 19 L18.5 12.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>']
+};
+function ic(name, cls) {
+  const d = ICONS[name];
+  return `<svg class="ic${cls ? ' ' + cls : ''}" viewBox="${d[0]}" aria-hidden="true" focusable="false">${d[1]}</svg>`;
+}
+function fillStaticIcons() {
+  document.querySelectorAll('[data-ic]').forEach(el => {
+    el.outerHTML = ic(el.getAttribute('data-ic'), el.getAttribute('data-cls') || '');
+  });
+}
+
+/* ---------- генератори задач ---------- */
+
+/* Обернені задачі (шукаємо швидкість) */
+function inverse(kind) {
+  let v, t, icon, text, step;
+  if (kind === 'bike') {
+    v = pick([10, 12, 14, 15, 16, 18]); t = rnd(2, 5); step = 2;
+    icon = ic('bike');
+    text = `Велосипедист їхав ${t} год і проїхав ${v * t} км. З якою швидкістю він їхав?`;
+  } else if (kind === 'bus') {
+    v = pick([50, 55, 60, 65, 70, 75, 80]); t = rnd(2, 5); step = 5;
+    icon = ic('bus');
+    text = `Автобус був у дорозі ${t} год і проїхав ${v * t} км. З якою швидкістю він рухався?`;
+  } else {
+    v = pick([150, 180, 200, 220, 240]); t = rnd(2, 4); step = 10;
+    icon = ic('heli');
+    text = `Вертоліт летів ${t} год і подолав ${v * t} км. З якою швидкістю він летів?`;
+  }
+  const S = v * t;
+  return {
+    icon, text, unit: 'км/год', correct: v,
+    options: makeOptions(v, [S * t, S - t, v + t, v - t], step),
+    solution: [
+      'Щоб знайти швидкість, відстань ділимо на час:',
+      L(`V = S : t = ${S} : ${t} = <b>${v}</b> (км/год)`)
+    ].join('')
+  };
+}
+
+/* Рух назустрічі: вантажівка і скутерист */
+function meetBike() {
+  const v1 = pick([50, 55, 60, 65, 70]);
+  const v2 = pick([30, 35, 40, 45, 50]);
+  const t = rnd(2, 4);
+  const w = v1 + v2, S = w * t;
+  return {
+    icon: ic('truck') + ic('scooter', 'flip'),
+    text: `Із села Яблунівка в село Грушівка, відстань між якими ${S} км, виїхала вантажівка зі швидкістю ${v1} км/год. Одночасно з нею з Грушівки в Яблунівку назустріч виїхав скутерист зі швидкістю ${v2} км/год. Через скільки годин вони зустрінуться?`,
+    unit: 'год', correct: t,
+    options: makeOptions(t, [S / v1, S / v2, S / (v1 - v2), t + 1, t - 1], 1),
+    solution: [
+      L(`1) ${v1} + ${v2} = ${w} (км/год) — швидкість зближення;`),
+      L(`2) ${S} : ${w} = <b>${t}</b> (год) — час, через який вони зустрінуться.`)
+    ].join('')
+  };
+}
+
+/* Рух назустріч: два катери */
+function meetCars() {
+  const v1 = pick([20, 25, 30, 35, 40]);
+  let v2;
+  do { v2 = pick([22, 28, 32, 36, 45]); } while (v2 === v1);
+  const t = rnd(2, 5);
+  const w = v1 + v2, S = w * t;
+  return {
+    icon: ic('boat') + ic('boat', 'flip'),
+    text: `Із двох пристаней на протилежних берегах озера одночасно назустріч один одному вийшли два катери. Відстань між пристанями — ${S} км. Швидкість одного катера ${v1} км/год, а другого — ${v2} км/год. Через скільки годин катери зустрінуться?`,
+    unit: 'год', correct: t,
+    options: makeOptions(t, [S / v1, S / v2, S / Math.abs(v1 - v2), t + 1, t - 1], 1),
+    solution: [
+      L(`1) ${v1} + ${v2} = ${w} (км/год) — швидкість зближення;`),
+      L(`2) ${S} : ${w} = <b>${t}</b> (год) — час, через який катери зустрінуться.`)
+    ].join('')
+  };
+}
+
+/* Протилежні напрями: два велосипедисти, два способи */
+function lions() {
+  const a = rnd(12, 22);
+  let b;
+  do { b = rnd(12, 22); } while (b === a);
+  const t = rnd(2, 5);
+  const x = a * t, y = b * t, w = a + b, S = w * t;
+  return {
+    icon: ic('cyclist', 'flip') + ic('cyclist'),
+    text: `Від зупинки одночасно в протилежних напрямках поїхали два велосипедисти. Швидкість першого ${a} км/год, а другого — ${b} км/год. Яка відстань буде між ними через ${t} год?`,
+    unit: 'км', correct: S,
+    options: makeOptions(S, [w, x, y, Math.abs(b - a) * t, x + b], 5),
+    solution: [
+      '<div class="sol-title">І спосіб</div>',
+      L(`1) ${a} · ${t} = ${x} (км) — проїхав перший велосипедист;`),
+      L(`2) ${b} · ${t} = ${y} (км) — проїхав другий велосипедист;`),
+      L(`3) ${x} + ${y} = <b>${S}</b> (км) — відстань між ними.`),
+      '<div class="sol-title">ІІ спосіб</div>',
+      L(`1) ${a} + ${b} = ${w} (км/год) — швидкість віддалення;`),
+      L(`2) ${w} · ${t} = <b>${S}</b> (км) — відстань між ними.`)
+    ].join('')
+  };
+}
+
+/* Протилежні напрями: два лижники, шукаємо швидкість другого (м/хв) */
+function planes() {
+  const t = pick([10, 15, 20, 30]);
+  const v1 = rnd(15, 25) * 10;
+  let v2;
+  do { v2 = rnd(14, 26) * 10; } while (v2 === v1);
+  const w = v1 + v2, S = w * t;
+  return {
+    icon: ic('skier', 'flip') + ic('skier'),
+    text: `Двоє лижників одночасно вирушили з бази відпочинку в протилежних напрямках. Через ${t} хв відстань між ними була ${S} м. Перший лижник ішов зі швидкістю ${v1} м/хв. З якою швидкістю йшов другий лижник?`,
+    unit: 'м/хв', correct: v2,
+    options: makeOptions(v2, [w, w + v1, Math.abs(v1 - v2), v1 + 10], 10),
+    solution: [
+      L(`1) ${S} : ${t} = ${w} (м/хв) — швидкість віддалення;`),
+      L(`2) ${w} − ${v1} = <b>${v2}</b> (м/хв) — швидкість другого лижника.`)
+    ].join('')
+  };
+}
+
+/* Один напрямок: туристи і вожатий на велосипеді, два способи */
+function train() {
+  let v1, d, t;
+  do {
+    v1 = pick([4, 5, 6]);
+    d = pick([2, 3, 4]);
+    t = pick([2, 3, 4, 5]);
+  } while ((v1 * d) % t !== 0 || v1 + (v1 * d) / t > 20);
+  const total = d + t, run = v1 * total, v2 = run / t;
+  const gap = v1 * d, diff = gap / t;
+  return {
+    icon: ic('hiker') + ic('cyclist'),
+    text: `З турбази вийшла група туристів зі швидкістю ${v1} км/год. Через ${d} год з тієї самої турбази в тому самому напрямі виїхав на велосипеді інструктор. З якою швидкістю мав їхати інструктор, щоб наздогнати туристів за ${t} год після свого виїзду?`,
+    unit: 'км/год', correct: v2,
+    options: makeOptions(v2, [diff, run, gap, (v1 * t) / total, v1 + d], 1),
+    solution: [
+      '<div class="sol-title">І спосіб</div>',
+      L(`1) ${d} + ${t} = ${total} (год) — були в дорозі туристи;`),
+      L(`2) ${v1} · ${total} = ${run} (км) — пройшли туристи до місця, де їх наздогнали;`),
+      L(`3) ${run} : ${t} = <b>${v2}</b> (км/год) — швидкість інструктора.`),
+      '<div class="sol-title">ІІ спосіб</div>',
+      L(`1) ${v1} · ${d} = ${gap} (км) — відстань між туристами та інструктором у момент його виїзду;`),
+      L(`2) ${gap} : ${t} = ${diff} (км/год) — на стільки інструктор має їхати швидше за туристів;`),
+      L(`3) ${v1} + ${diff} = <b>${v2}</b> (км/год) — швидкість інструктора.`)
+    ].join('')
+  };
+}
+
+/* Один напрямок: товарний потяг і експрес */
+function ships() {
+  const v1 = pick([40, 45, 50, 55, 60]);
+  const v2 = v1 + pick([20, 25, 30, 35, 40]);
+  const t = rnd(2, 6);
+  const diff = v2 - v1, S = diff * t;
+  return {
+    icon: ic('freight') + ic('express'),
+    text: `З одного вокзалу в одному напрямку одночасно вирушили товарний потяг і експрес. Швидкість товарного потяга ${v1} км/год, а експреса — ${v2} км/год. Яка відстань буде між ними через ${t} год після відправлення?`,
+    unit: 'км', correct: S,
+    options: makeOptions(S, [(v1 + v2) * t, v1 * t, v2 * t, diff], 5),
+    solution: [
+      '<div class="sol-title">І спосіб</div>',
+      L(`1) ${v2} − ${v1} = ${diff} (км/год) — швидкість віддалення;`),
+      L(`2) ${diff} · ${t} = <b>${S}</b> (км) — відстань між потягами.`),
+      '<div class="sol-title">ІІ спосіб</div>',
+      L(`1) ${v2} · ${t} = ${v2 * t} (км) — проїхав експрес;`),
+      L(`2) ${v1} · ${t} = ${v1 * t} (км) — проїхав товарний потяг;`),
+      L(`3) ${v2 * t} − ${v1 * t} = <b>${S}</b> (км) — відстань між потягами.`)
+    ].join('')
+  };
+}
+
+/* ---------- схеми напрямків ---------- */
+function dirSvg(type) {
+  const arrow = (x1, x2, c) => {
+    const s = x2 > x1 ? -7 : 7;
+    return `<line x1="${x1}" y1="16" x2="${x2}" y2="16" stroke="${c}" stroke-width="3" stroke-linecap="round"/>` +
+           `<path d="M${x2 + s} 10 L${x2} 16 L${x2 + s} 22" fill="none" stroke="${c}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+  };
+  const dot = x => `<circle cx="${x}" cy="16" r="5" fill="#2f6fed"/>`;
+  let inner = '';
+  if (type === 'towards')  inner = dot(8) + dot(112) + arrow(18, 54, '#f5a623') + arrow(102, 66, '#2e9e5b');
+  if (type === 'opposite') inner = dot(60) + arrow(52, 10, '#f5a623') + arrow(68, 110, '#2e9e5b');
+  if (type === 'same')     inner = dot(8) + dot(46) + arrow(18, 40, '#f5a623') + arrow(56, 112, '#2e9e5b');
+  return `<svg width="120" height="32" viewBox="0 0 120 32" aria-hidden="true">${inner}</svg>`;
+}
+
+/* ---------- стан і відображення ---------- */
+let groups = [];
+
+function build() {
+  groups = [
+    { title: 'Потренуйся! Обернені задачі', gicon: 'pencil', dir: null,
+      note: 'Знайди швидкість: за відстанню й часом.',
+      qs: [inverse('bike'), inverse('bus'), inverse('heli')] },
+    { title: 'Рух назустріч', dir: 'towards', qs: [meetBike(), meetCars()] },
+    { title: 'Рух у протилежних напрямах', dir: 'opposite',
+      note: 'Після відповіді подивись обидва способи розв’язання.', qs: [lions(), planes()] },
+    { title: 'Рух в одному напрямку', dir: 'same',
+      note: 'Після відповіді подивись обидва способи розв’язання.', qs: [train(), ships()] }
+  ];
+  let n = 0;
+  groups.forEach(g => g.qs.forEach(q => { q.n = ++n; q.picked = null; }));
+}
+
+const allQs = () => groups.flatMap(g => g.qs);
+
+function render() {
+  const root = document.getElementById('tasks');
+  root.innerHTML = '';
+  groups.forEach(g => {
+    const sec = document.createElement('section');
+    sec.className = 'group';
+    sec.innerHTML =
+      `<div class="group-head"><h2>${g.gicon ? ic(g.gicon, 'h-ic') : ''}${g.title}</h2>${g.dir ? dirSvg(g.dir) : ''}</div>` +
+      (g.note ? `<p class="note">${g.note}</p>` : '');
+    g.qs.forEach(q => sec.appendChild(makeCard(q)));
+    root.appendChild(sec);
+  });
+  document.getElementById('stTotal').textContent = allQs().length;
+  update();
+}
+
+function makeCard(q) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'q' + q.n;
+  card.innerHTML =
+    `<div class="q-head"><div class="num">${q.n}</div>` +
+    `<div class="q-body"><div class="q-icons">${q.icon}</div><p class="q-text">${q.text}</p></div></div>` +
+    `<div class="opts"></div><div class="fb" hidden></div>`;
+  const opts = card.querySelector('.opts');
+  q.options.forEach((val, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'opt';
+    b.textContent = `${val} ${q.unit}`;
+    b.addEventListener('click', () => choose(q, card, i));
+    opts.appendChild(b);
+  });
+  return card;
+}
+
+function choose(q, card, i) {
+  if (q.picked !== null) return;
+  q.picked = i;
+  const right = q.options[i] === q.correct;
+  const btns = card.querySelectorAll('.opt');
+  btns.forEach((b, idx) => {
+    b.disabled = true;
+    if (q.options[idx] === q.correct) b.classList.add('right');
+    else if (idx === i) b.classList.add('wrong');
+    else b.classList.add('dim');
+    const label = b.textContent;
+    if (q.options[idx] === q.correct) b.innerHTML = ic('check', 'mark') + label;
+    else if (idx === i) b.innerHTML = ic('cross', 'mark') + label;
+  });
+  card.classList.add('done', right ? 'ok' : 'bad');
+
+  const fb = card.querySelector('.fb');
+  fb.className = 'fb ' + (right ? 'ok' : 'bad');
+  const isLast = q.n === allQs().length;
+  fb.innerHTML =
+    `<div class="verdict">${right ? ic('check', 'mark') + 'Правильно! Молодець!' : ic('cross', 'mark') + `Не зовсім. Правильна відповідь: ${q.correct} ${q.unit}`}</div>` +
+    `<div class="sol-title">Розв’язання</div>${q.solution}` +
+    `<button class="btn next" type="button">${isLast ? 'До підсумку' : 'Наступна задача'}${ic('arrowdown', 'r')}</button>`;
+  fb.hidden = false;
+  fb.querySelector('.next').addEventListener('click', () => {
+    const target = isLast ? document.getElementById('summary') : document.getElementById('q' + (q.n + 1));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  update();
+}
+
+function update() {
+  const qs = allQs();
+  const answered = qs.filter(q => q.picked !== null).length;
+  const correct = qs.filter(q => q.picked !== null && q.options[q.picked] === q.correct).length;
+  document.getElementById('stAnswered').textContent = answered;
+  document.getElementById('stCorrect').textContent = correct;
+  document.getElementById('fill').style.width = (answered / qs.length * 100) + '%';
+
+  // поточна задача — перша без відповіді
+  const cur = qs.find(q => q.picked === null);
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('current'));
+  if (cur) {
+    const el = document.getElementById('q' + cur.n);
+    if (el) el.classList.add('current');
+  }
+
+  const summary = document.getElementById('summary');
+  if (answered === qs.length) {
+    showSummary(qs, correct);
+    summary.hidden = false;
+  } else {
+    summary.hidden = true;
+  }
+}
+
+function showSummary(qs, correct) {
+  const total = qs.length;
+  const stars = Math.round(correct / total * 5);
+  document.getElementById('sumScore').innerHTML = `${correct} <small>з ${total}</small>`;
+  document.getElementById('sumStars').innerHTML = ic('star', 'star').repeat(stars) + ic('starempty', 'star').repeat(5 - stars);
+  let msg;
+  if (correct === total) msg = 'Ідеально! Ти справжній майстер задач на рух!';
+  else if (correct >= total * 0.8) msg = 'Чудовий результат! Ще трохи — і буде ідеально!';
+  else if (correct >= total * 0.6) msg = 'Добре! Перегляни розв’язання задач із помилками.';
+  else if (correct >= total * 0.4) msg = 'Непогано для початку. Повтори формули та спробуй ще раз!';
+  else msg = 'Не засмучуйся! Повтори формули й спробуй з новими числами.';
+  document.getElementById('sumMsg').textContent = msg;
+  document.getElementById('sumChips').innerHTML = qs.map(q => {
+    const ok = q.options[q.picked] === q.correct;
+    return `<a class="chip ${ok ? 'ok' : 'bad'}" href="#q${q.n}">${q.n} ${ic(ok ? 'check' : 'cross')}</a>`;
+  }).join('');
+}
+
+function restart() {
+  build();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function init() {
+  fillStaticIcons();
+  document.getElementById('btnNew').addEventListener('click', restart);
+  document.getElementById('btnAgain').addEventListener('click', restart);
+  build();
+  render();
+}
+init();
+</script>
+</body>
+</html>
